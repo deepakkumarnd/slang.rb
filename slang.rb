@@ -1,4 +1,5 @@
 require_relative 'expression'
+require_relative 'builder'
 
 module SLang
   OPERATOR = {
