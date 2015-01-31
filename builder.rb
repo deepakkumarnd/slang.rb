@@ -1,5 +1,3 @@
-require_relative 'rdparser'
-
 module SLang
   class AbstractBuilder; end
 

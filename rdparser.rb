@@ -1,4 +1,6 @@
 require_relative 'lex'
+require_relative 'print_line_statement'
+require_relative 'print_statement'
 
 module SLang
   class RDparser < Lexer
@@ -15,6 +17,12 @@ module SLang
     def call_expr
       @current_token = get_token()
       expr()
+    end
+
+    def get_next
+      @last_token    = @current_token
+      @current_token = get_token
+      @current_token
     end
 
     def expr
@@ -70,6 +78,64 @@ module SLang
       end
 
       ret_val
+    end
+
+    def parse()
+      get_next
+      statement_list()
+    end
+
+    def statement_list()
+      list = []
+
+      while(@current_token != TOKEN[:TOK_NULL])
+        stmt = statement()
+        list << stmt if stmt != nil
+      end
+
+      list
+    end
+
+    def statement()
+      value = nil
+
+      case @current_token
+      when TOKEN[:TOK_PRINT] then
+        value = parse_print_statement()
+        get_next
+      when TOKEN[:TOK_PRINTLN] then
+        value = parse_printline_statement()
+        get_next
+      else
+        puts "Invalid statement: #{@current_token}"
+        raise 'Error'
+      end
+
+      value
+    end
+
+    def parse_print_statement()
+      get_next
+      e = expr
+
+      if @current_token != TOKEN[:TOK_SEMI]
+        puts "; is expected"
+        raise "Error"
+      end
+
+      PrintStatement.new(e)
+    end
+
+    def parse_printline_statement()
+      get_next
+      e = expr
+
+      if @current_token != TOKEN[:TOK_SEMI]
+        puts "; is expected"
+        raise "Error"
+      end
+
+      PrintLineStatement.new(e)
     end
   end
 end

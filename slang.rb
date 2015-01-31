@@ -1,5 +1,7 @@
+require_relative 'rdparser'
 require_relative 'expression'
 require_relative 'builder'
+require_relative 'statement'
 
 module SLang
   OPERATOR = {
